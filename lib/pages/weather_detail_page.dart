@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_weather_app_bloc/bloc/weather_bloc.dart';
 
 import '../data/model/weather.dart';
 
@@ -16,11 +18,19 @@ class WeatherDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Weather Detail"),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        alignment: Alignment.center,
-        //TODO: Display the weather detail using Bloc
-        child: buildLoading(),
+      body: BlocBuilder<WeatherBloc, WeatherState>(
+        builder: (context, state) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            alignment: Alignment.center,
+            //TODO: Display the weather detail using Bloc
+            child: state.when(
+              initial: () => Container(),
+              loading: () => buildLoading(),
+              success: (d) => buildColumnWithData(context, d),
+            ),
+          );
+        },
       ),
     );
   }
@@ -44,12 +54,12 @@ class WeatherDetailPage extends StatelessWidget {
         ),
         Text(
           // Display the Celsius temperature with 1 decimal place
-          "${weather.temperatureCelsius.toStringAsFixed(1)} °C",
+          "${weather.temperatureCelsius.toStringAsFixed(2)} °C",
           style: const TextStyle(fontSize: 80),
         ),
         Text(
           // Display the Fahrenheit temperature with 1 decimal place
-          "${weather.temperatureFahrenheit.toStringAsFixed(1)} °F",
+          "${weather.temperatureFahrenheit.toStringAsFixed(2)} °F",
           style: const TextStyle(fontSize: 80),
         ),
       ],

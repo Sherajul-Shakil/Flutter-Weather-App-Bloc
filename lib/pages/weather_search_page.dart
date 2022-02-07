@@ -17,11 +17,9 @@ class WeatherSearchPage extends StatelessWidget {
           body: Container(
             padding: const EdgeInsets.symmetric(vertical: 16),
             alignment: Alignment.center,
-            child: state.map(
-              initial: (_) => buildInitialInput(),
-              loading: (_) {
-                return buildLoading();
-              },
+            child: state.when(
+              initial: () => buildInitialInput(),
+              loading: () => buildLoading(),
               success: (d) => buildColumnWithData(context, d),
             ),
           ),
@@ -42,36 +40,19 @@ class WeatherSearchPage extends StatelessWidget {
     );
   }
 
-  Column buildColumnWithData(BuildContext context, Success success) {
-    final cityName = success.when(
-        initial: () => '',
-        loading: () => '',
-        success: (weather) => weather.cityName);
-    final String temperatureCelsius = success
-        .when(
-            initial: () => '',
-            loading: () => '',
-            success: (weather) => weather.temperatureCelsius)
-        .toString();
-    final String temperatureFahrenheit = success
-        .when(
-            initial: () => '',
-            loading: () => '',
-            success: (weather) => weather.temperatureFahrenheit)
-        .toString();
+  Column buildColumnWithData(BuildContext context, Weather weather) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Text(
-          cityName,
+          weather.cityName,
           style: const TextStyle(
             fontSize: 40,
             fontWeight: FontWeight.w700,
           ),
         ),
         Text(
-          // Display the temperature with 1 decimal place
-          "${temperatureCelsius} °C",
+          "${weather.temperatureCelsius.toStringAsFixed(2)} °C",
           style: const TextStyle(fontSize: 80),
         ),
         RaisedButton(
@@ -79,12 +60,16 @@ class WeatherSearchPage extends StatelessWidget {
           color: Colors.lightBlue[100],
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => WeatherDetailPage(
-                masterWeather: Weather(
-                    cityName: cityName,
-                    temperatureCelsius: double.parse(temperatureCelsius),
-                    temperatureFahrenheit: double.parse(temperatureFahrenheit)),
-                // key: null!,
+              builder: (_) => BlocProvider.value(
+                value: BlocProvider.of<WeatherBloc>(context),
+                child: WeatherDetailPage(
+                  masterWeather: Weather(
+                    cityName: weather.cityName,
+                    temperatureCelsius: weather.temperatureCelsius,
+                    temperatureFahrenheit: weather.temperatureFahrenheit,
+                  ),
+                  // key: null!,
+                ),
               ),
             ));
           },
@@ -108,9 +93,9 @@ class CityInputField extends StatelessWidget {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           suffixIcon: IconButton(
             onPressed: () {
-              context
-                  .read<WeatherBloc>()
-                  .add(const WeatherEvent.getWeatherPressed("S=dhaka"));
+              // context
+              //     .read<WeatherBloc>()
+              //     .add(const WeatherEvent.getWeatherPressed("dhaka"));
             },
             icon: const Icon(Icons.search),
           ),
@@ -120,6 +105,6 @@ class CityInputField extends StatelessWidget {
   }
 
   void submitCityName(BuildContext context, String cityName) {
-    //TODO: Fetch the weather from the repository and display it somehow
+    context.read<WeatherBloc>().add(WeatherEvent.getWeatherPressed(cityName));
   }
 }
