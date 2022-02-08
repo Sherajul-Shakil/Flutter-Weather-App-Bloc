@@ -23,7 +23,6 @@ class WeatherDetailPage extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(vertical: 16),
             alignment: Alignment.center,
-            //TODO: Display the weather detail using Bloc
             child: state.when(
               initial: () => Container(),
               loading: () => buildLoading(),
@@ -53,12 +52,10 @@ class WeatherDetailPage extends StatelessWidget {
           ),
         ),
         Text(
-          // Display the Celsius temperature with 1 decimal place
           "${weather.temperatureCelsius.toStringAsFixed(2)} °C",
           style: const TextStyle(fontSize: 80),
         ),
         Text(
-          // Display the Fahrenheit temperature with 1 decimal place
           "${weather.temperatureFahrenheit.toStringAsFixed(2)} °F",
           style: const TextStyle(fontSize: 80),
         ),

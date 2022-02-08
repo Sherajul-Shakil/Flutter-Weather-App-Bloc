@@ -18,7 +18,6 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 }
 
 Future<Weather> _fetchWeatherFromFakeApi(String cityName) {
-  // Simulate network delay
   return Future.delayed(
     const Duration(seconds: 1),
     () {
@@ -32,17 +31,17 @@ Future<Weather> _fetchWeatherFromFakeApi(String cityName) {
   );
 }
 
-Future<Weather> fetchDetailedWeather(
-    String cityName, double tempValueC, double tempValueF) {
-  // Simulate network delay
-  return Future.delayed(
-    const Duration(seconds: 1),
-    () {
-      return Weather(
-        cityName: cityName,
-        temperatureCelsius: tempValueC,
-        temperatureFahrenheit: tempValueF,
-      );
-    },
-  );
-}
+// Future<Weather> fetchDetailedWeather(
+//     String cityName, double tempValueC, double tempValueF) {
+//   // Simulate network delay
+//   return Future.delayed(
+//     const Duration(seconds: 1),
+//     () {
+//       return Weather(
+//         cityName: cityName,
+//         temperatureCelsius: tempValueC,
+//         temperatureFahrenheit: tempValueF,
+//       );
+//     },
+//   );
+// }
